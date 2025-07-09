@@ -9,12 +9,12 @@ logs
 **/*.back.*
 .*env
 .env
-
+node_modules/
 node_modules
 bower_components
 
 *.sublime*
-
+node_modules
 psd
 thumb
 sketch
