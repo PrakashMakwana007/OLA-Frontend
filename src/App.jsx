@@ -15,7 +15,7 @@ import CreateQuiz from "./components/CrateQuiz";
 import MyQuizzes from "./components/Myquiz";
 import QuizList from "./components/QuizList";
 import StartQuiz from "./components/StartQ";
-import QuizRes from "./components/quizRes";
+import QuizRes from "./components/QuizRes";
 
 function App() {
   const dispatch = useDispatch();
