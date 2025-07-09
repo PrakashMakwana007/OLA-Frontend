@@ -26,13 +26,13 @@ function Home() {
 
   return (
     <div
-      className={`min-h-screen px-6 py-12 transition-all ${
+      className={`min-h-screen px-4 sm:px-6 md:px-8 py-12 transition-all ${
         isDark ? 'bg-[#121212] text-white' : 'bg-white text-black'
       }`}
     >
       {/* Welcome Section */}
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-10 mb-16">
-        <div className="flex-1">
+        <div className="flex-1 text-center md:text-left">
           <h1 className="text-4xl sm:text-5xl font-bold text-orange-500 mb-4">
             Welcome to LearnApp 📚
           </h1>
@@ -47,7 +47,7 @@ function Home() {
           <img
             src="/student.jpg.jpg"
             alt="Student learning"
-            className="rounded-xl shadow-lg w-full object-cover max-h-[500px]"
+            className="rounded-xl shadow-lg w-full object-cover max-h-[400px] md:max-h-[500px]"
           />
         </div>
       </div>
@@ -57,7 +57,7 @@ function Home() {
         <h2 className="text-3xl font-semibold text-center text-orange-500 mb-10">
           Top Developer Tracks 🚀
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-10">
           {cards.map((card, index) => (
             <div
               key={index}
@@ -83,7 +83,7 @@ function Home() {
       {/* Motivation + Video Section */}
       <div className="max-w-6xl mx-auto mt-20 flex flex-col md:flex-row items-center gap-10">
         {/* Text Section */}
-        <div className="flex-1 space-y-3">
+        <div className="flex-1 space-y-3 text-center md:text-left">
           <h2 className="text-3xl font-semibold text-orange-500">Why Learn to Code?</h2>
           <p className="text-base leading-relaxed">
             🚀 Coding is the new literacy.<br />
@@ -102,7 +102,7 @@ function Home() {
         </div>
 
         {/* Video Section */}
-        <div className="flex-1 relative rounded-xl overflow-hidden shadow-lg">
+        <div className="flex-1 relative rounded-xl overflow-hidden shadow-lg w-full h-[250px] sm:h-[300px] md:h-[350px]">
           <div className="absolute inset-0 bg-black opacity-30 z-10 rounded-xl" />
           <video
             src="/coding.mp4"

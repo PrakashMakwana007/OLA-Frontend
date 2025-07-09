@@ -17,36 +17,42 @@ const UploadedCourses = () => {
       typeof course.teacherId === "object"
         ? course.teacherId._id
         : course.teacherId;
-
     return courseTeacherId?.toString() === user?._id?.toString();
   });
 
   if (loading)
     return <p className="text-center py-6">Loading your uploaded courses...</p>;
+
   if (error)
-    return <p className="text-center text-red-500 py-6">Error: {error}</p>;
+    return (
+      <p className="text-center text-red-500 py-6">Error: {error}</p>
+    );
 
   return (
-    <div className={`p-4 min-h-screen ${isDark ? "bg-[#0f172a]" : "bg-white"}`}>
-      <h1 className="text-2xl font-bold mb-6 text-center text-orange-500">
-        My Uploaded Courses
+    <div
+      className={`min-h-screen px-4 sm:px-6 md:px-8 py-10 transition-all ${
+        isDark ? "bg-[#0f172a] text-white" : "bg-white text-black"
+      }`}
+    >
+      <h1 className="text-2xl sm:text-3xl font-bold mb-10 text-center text-orange-500">
+        📦 My Uploaded Courses
       </h1>
 
       {uploadedCourses.length === 0 ? (
-        <p className="text-gray-500 text-center">
+        <p className="text-center text-gray-400">
           You haven't uploaded any courses yet.
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {uploadedCourses.map((course) => (
             <div
               key={course._id}
-              className={`relative group border rounded-xl shadow transition-all duration-300 hover:shadow-lg ${
+              className={`relative group rounded-xl border overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 ${
                 isDark ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200"
               }`}
             >
-              {/* Front */}
-              <div className="flex flex-col items-center text-center p-4">
+              {/* Front Content */}
+              <div className="flex flex-col items-center text-center p-5">
                 <img
                   src={`${
                     import.meta.env.VITE_LOCAL_URL
@@ -54,19 +60,14 @@ const UploadedCourses = () => {
                   alt={course.title}
                   className="w-24 h-24 rounded-full object-cover border mb-3"
                 />
-                <h2
-                  className={`text-lg font-semibold ${
-                    isDark ? "text-white" : "text-gray-900"
-                  }`}
-                >
-                  {course.title}
-                </h2>
+                <h2 className="text-lg font-semibold">{course.title}</h2>
               </div>
 
-              {/* Hover Reveal */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-opacity-90 flex flex-col justify-center items-center text-center px-4 py-6 z-10"
+              {/* Hover Reveal (shows only on non-touch devices) */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-center px-4 py-6 z-10"
                 style={{
-                  backgroundColor: isDark ? "#1f2937" : "#f9fafb",
+                  backgroundColor: isDark ? "#1f2937ee" : "#f9fafbee",
                 }}
               >
                 <p
@@ -83,7 +84,7 @@ const UploadedCourses = () => {
                     href={course.lessons[0].videoURL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-medium text-blue-500 hover:underline"
+                    className="text-sm font-medium text-blue-500 hover:underline mt-2"
                   >
                     ▶ Watch First Lesson
                   </a>

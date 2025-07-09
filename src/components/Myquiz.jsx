@@ -13,7 +13,6 @@ const MyQuizzes = () => {
     const fetchQuizzes = async () => {
       try {
         const res = await API.get(`${import.meta.env.VITE_API_BASE_URL}/quiz`);
-
         const uploaded = res.data.data.filter(
           (quiz) => quiz?.course?.teacherId === user?._id
         );
@@ -30,27 +29,31 @@ const MyQuizzes = () => {
 
   return (
     <div
-      className={`max-w-5xl mx-auto p-6 rounded-xl shadow mt-6 ${
+      className={`min-h-screen max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-10 transition-all rounded-xl shadow ${
         isDark ? "bg-[#1e1e1e] text-white" : "bg-white text-black"
       }`}
     >
-      <h2 className="text-2xl font-bold mb-4 text-center">📚 My Quizzes</h2>
+      <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-center text-orange-500">
+        📚 My Quizzes
+      </h2>
 
       {loading ? (
-        <p className="text-center">Loading quizzes...</p>
+        <p className="text-center text-lg">⏳ Loading quizzes...</p>
       ) : quizzes.length === 0 ? (
-        <p className="text-center">No quizzes found.</p>
+        <p className="text-center text-lg">🚫 No quizzes found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {quizzes.map((quiz) => (
             <div
               key={quiz._id}
-              className={`p-4 rounded-lg border shadow space-y-4 ${
-                isDark ? "bg-[#2a2a2a] border-gray-700" : "bg-gray-100"
+              className={`p-5 rounded-lg border shadow space-y-5 ${
+                isDark
+                  ? "bg-[#2a2a2a] border-gray-700"
+                  : "bg-gray-100 border-gray-200"
               }`}
             >
-              <h3 className="text-lg font-semibold">
-                {quiz?.course?.title || "Untitled Course"}
+              <h3 className="text-lg sm:text-xl font-semibold text-orange-400">
+                📘 {quiz?.course?.title || "Untitled Course"}
               </h3>
               <p>📝 Total Questions: {quiz?.questions?.length || 0}</p>
               <p>
@@ -60,24 +63,28 @@ const MyQuizzes = () => {
                   : "N/A"}
               </p>
 
-              {quiz.questions.map((q, i) => (
-                <div
-                  key={i}
-                  className={`p-3 rounded-md ${
-                    isDark ? "bg-[#1a1a1a]" : "bg-white"
-                  }`}
-                >
-                  <h4 className="font-semibold">Q{i + 1}: {q.question}</h4>
-                  <ul className="list-disc pl-5">
-                    {q.options.map((opt, idx) => (
-                      <li key={idx}>{opt}</li>
-                    ))}
-                  </ul>
-                  <p className="mt-1 font-medium text-green-600">
-                    ✅ Answer: {q.answer}
-                  </p>
-                </div>
-              ))}
+              <div className="space-y-4">
+                {quiz.questions.map((q, i) => (
+                  <div
+                    key={i}
+                    className={`p-4 rounded-md shadow-sm ${
+                      isDark ? "bg-[#1a1a1a]" : "bg-white"
+                    }`}
+                  >
+                    <h4 className="font-medium mb-2">
+                      Q{i + 1}: {q.question}
+                    </h4>
+                    <ul className="list-disc pl-5 text-sm sm:text-base space-y-1">
+                      {q.options.map((opt, idx) => (
+                        <li key={idx}>{opt}</li>
+                      ))}
+                    </ul>
+                    <p className="mt-2 text-sm font-semibold text-green-500">
+                      ✅ Correct Answer: {q.answer}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>

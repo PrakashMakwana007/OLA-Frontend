@@ -26,8 +26,12 @@ const QuizList = () => {
   }, []);
 
   return (
-    <div className={`min-h-screen px-4 py-10 flex flex-col items-center ${isDark ? "bg-[#121212] text-white" : "bg-gray-50 text-black"}`}>
-      <h2 className="text-4xl font-bold mb-10 text-center font-[Inter] tracking-tight">
+    <div
+      className={`min-h-screen px-4 sm:px-6 md:px-8 py-10 transition-all flex flex-col items-center ${
+        isDark ? "bg-[#121212] text-white" : "bg-gray-50 text-black"
+      }`}
+    >
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-10 text-center text-orange-500 tracking-tight font-[Inter]">
         🧠 Available Quizzes
       </h2>
 
@@ -40,13 +44,13 @@ const QuizList = () => {
           {quizzes.map((quiz) => (
             <div
               key={quiz._id}
-              className={`p-6 rounded-2xl border shadow transition hover:shadow-xl duration-300 ease-in-out ${
+              className={`p-5 rounded-2xl border shadow-sm transition hover:shadow-xl duration-300 ease-in-out ${
                 isDark
                   ? "bg-gray-800 border-gray-700"
                   : "bg-white border-gray-200"
               }`}
             >
-              <h3 className="text-xl font-semibold mb-2 font-[Poppins]">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2 font-[Poppins] text-orange-500">
                 📘 {quiz.course?.title || "Untitled Course"}
               </h3>
               <p className="mb-1 font-medium">📝 Questions: {quiz.questions.length}</p>
@@ -55,7 +59,7 @@ const QuizList = () => {
               </p>
               <button
                 onClick={() => navigate(`/quiz/${quiz._id}`)}
-                className="w-full mt-4 px-4 py-2 text-center bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-full font-semibold hover:brightness-110 transition duration-200 transform hover:scale-105"
+                className="w-full mt-4 px-4 py-2 bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-full font-semibold hover:brightness-110 hover:scale-105 transition duration-200"
               >
                 🚀 Start Quiz
               </button>

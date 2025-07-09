@@ -1,13 +1,17 @@
 import { useSelector } from 'react-redux';
 import AddCourse from '../components/Uplode.Corese';
 import CourseList from '../components/CoreseLayout';
-import  UploadedCourses  from '../components/Mycorses'
+import UploadedCourses from '../components/Mycorses';
+
 function CoursePage() {
   const { user } = useSelector((state) => state.auth); 
-   console.log("user loging  user " ,user.role)
+  console.log("user loging  user ", user.role);
+
   return (
-    <div className="p-4">
-      <h1 className="text-3xl font-bold mb-6">Courses</h1>
+    <div className="min-h-screen px-4 sm:px-6 md:px-8 pt-10 pb-20">
+      <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-orange-500">
+        Courses
+      </h1>
 
       {/* If user is a teacher, show upload form */}
       {user?.role === 'teacher' && (
@@ -17,7 +21,7 @@ function CoursePage() {
       )}
 
       {/* Show course list for everyone */}
-      <UploadedCourses/>
+      <UploadedCourses />
     </div>
   );
 }

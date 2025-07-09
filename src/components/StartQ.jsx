@@ -1,4 +1,3 @@
-// src/components/StartQuiz.jsx
 import React, { useEffect, useState } from "react";
 import API from "../api/api";
 import { useParams, useNavigate } from "react-router-dom";
@@ -46,47 +45,60 @@ const StartQuiz = () => {
       });
 
       const resultData = res.data.data;
-
-      // ✅ Attach full quiz with questions
       resultData.quiz = quiz;
-
-      // ✅ Navigate with result + full quiz
       navigate("/quiz-result", { state: resultData });
     } catch (err) {
       console.error("Submission failed:", err);
     }
   };
 
-  if (loading) return <div className="text-center">Loading quiz...</div>;
+  if (loading) return <div className="text-center py-10">Loading quiz...</div>;
 
   return (
-    <div className={`max-w-4xl mx-auto p-6 ${isDark ? "text-white" : "text-black"}`}>
-      <h2 className="text-2xl font-bold text-center mb-6">{quiz.course?.title} Quiz</h2>
-      <form className="space-y-6">
+    <div
+      className={`min-h-screen max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-10 transition-all ${
+        isDark ? "text-white bg-[#121212]" : "text-black bg-white"
+      }`}
+    >
+      <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-orange-500">
+        {quiz.course?.title} Quiz
+      </h2>
+
+      <form className="space-y-8">
         {quiz.questions.map((q, idx) => (
-          <div key={idx} className="p-4 border rounded-md">
-            <p className="font-semibold mb-2">{idx + 1}. {q.question}</p>
-            {q.options.map((opt, i) => (
-              <label key={i} className="block">
-                <input
-                  type="radio"
-                  name={`q-${idx}`}
-                  value={opt}
-                  checked={answers[idx] === opt}
-                  onChange={() => handleChange(idx, opt)}
-                  className="mr-2"
-                />
-                {opt}
-              </label>
-            ))}
+          <div
+            key={idx}
+            className={`p-4 sm:p-6 rounded-lg shadow-md ${
+              isDark ? "bg-[#1e1e1e]" : "bg-gray-100"
+            }`}
+          >
+            <p className="font-semibold text-base sm:text-lg mb-4">
+              {idx + 1}. {q.question}
+            </p>
+            <div className="flex flex-col gap-2">
+              {q.options.map((opt, i) => (
+                <label key={i} className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name={`q-${idx}`}
+                    value={opt}
+                    checked={answers[idx] === opt}
+                    onChange={() => handleChange(idx, opt)}
+                    className="mr-3"
+                  />
+                  <span>{opt}</span>
+                </label>
+              ))}
+            </div>
           </div>
         ))}
+
         <button
           type="button"
           onClick={handleSubmit}
-          className="mt-6 w-full py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+          className="mt-8 w-full py-3 bg-orange-500 text-white rounded-md font-semibold hover:bg-orange-600 transition"
         >
-          Submit Quiz
+          🚀 Submit Quiz
         </button>
       </form>
     </div>

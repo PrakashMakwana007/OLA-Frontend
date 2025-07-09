@@ -13,9 +13,8 @@ function AddCourse() {
   const dispatch = useDispatch();
   const isDark = useSelector((state) => state.theme.theme === 'dark');
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
 
   const handleLessonChange = (index, e) => {
     const updatedLessons = [...lessons];
@@ -52,7 +51,6 @@ function AddCourse() {
 
     try {
       const res = await dispatch(createCourse(data)).unwrap();
-      console.log("cretd corese ",res);
       toast.success(res.data.meseage || 'Course created successfully!');
       setFormData({ title: '', description: '' });
       setThumbnailFile(null);
@@ -77,20 +75,19 @@ function AddCourse() {
 
   return (
     <div
-      className={`p-6 max-w-3xl mx-auto rounded-xl shadow-lg transition-all duration-300 ${
+      className={`px-4 sm:px-6 py-10 max-w-3xl mx-auto rounded-xl shadow-lg transition-all duration-300 ${
         isDark ? 'bg-[#0f172a] text-white' : 'bg-white text-black'
       }`}
     >
       <h2
-        className={`text-3xl font-bold mb-6 text-center ${
+        className={`text-2xl sm:text-3xl font-bold mb-6 text-center ${
           isDark ? 'text-orange-400' : 'text-orange-600'
         }`}
       >
         📦 Upload a Course
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Title */}
+      <form onSubmit={handleSubmit} className="space-y-5">
         <input
           type="text"
           name="title"
@@ -101,7 +98,6 @@ function AddCourse() {
           required
         />
 
-        {/* Description */}
         <textarea
           name="description"
           value={formData.description}
@@ -111,7 +107,6 @@ function AddCourse() {
           required
         />
 
-        {/* Thumbnail */}
         <input
           type="file"
           name="thumbnail"
@@ -128,7 +123,7 @@ function AddCourse() {
         {/* Lessons */}
         <div className="space-y-6">
           {lessons.map((lesson, index) => (
-            <div key={index} className="space-y-2">
+            <div key={index} className="space-y-3">
               <input
                 type="text"
                 name="title"
@@ -164,7 +159,6 @@ function AddCourse() {
           </button>
         </div>
 
-        {/* Upload Button */}
         <button type="submit" className={`${buttonClasses} w-full`}>
           🚀 Upload Course
         </button>

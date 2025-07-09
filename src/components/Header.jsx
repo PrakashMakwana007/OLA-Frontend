@@ -1,34 +1,47 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
 import ThemeToggle from './Toggle.theam';
 import LogoutButton from './Logout';
+import { logout } from '../api/auth.api';
+import { clearCredentials } from '../store/authSlice';
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const currentTheme = useSelector((state) => state.theme.theme);
   const isDark = currentTheme === 'dark';
   const { user } = useSelector((state) => state.auth);
-  const role = user?.role || 'student'; 
+  const dispatch = useDispatch();
+  const role = user?.role || 'student';
 
   const teacherLinks = [
     { label: 'Home', path: '/' },
-    { label: 'Uploded Courses', path: '/mycourses' },
+    { label: 'Uploaded Courses', path: '/mycourses' },
     { label: 'Create Course', path: '/courses' },
     { label: 'Create Quiz', path: '/quiz' },
-    // { label: 'My Quizzes', path: '/my-quizzes' },
   ];
 
   const studentLinks = [
     { label: 'Home', path: '/' },
     { label: 'Courses', path: '/corselist' },
     { label: 'Quiz', path: '/quiz-list' },
-    // { label: 'Quiz Result', path: '/quizres' }, 
-    // { label: 'My Courses', path: '/mycourses' },
   ];
 
   const navLinks = role === 'teacher' ? teacherLinks : studentLinks;
+
+  const handleMobileLogout = async () => {
+    try {
+      await dispatch(logout()).unwrap();
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      dispatch(clearCredentials());
+    } catch (err) {
+      console.error("Logout failed:", err);
+    } finally {
+      setIsOpen(false);
+    }
+  };
 
   return (
     <>
@@ -36,7 +49,7 @@ function Header() {
         className={`sticky top-0 z-50 border-b-4 border-orange-400 transition-all duration-300 shadow-lg ${
           isDark ? 'bg-[#121212] text-white' : 'bg-white text-black'
         }`}
-      > 
+      >
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
@@ -76,7 +89,7 @@ function Header() {
             )}
           </div>
 
-          {/* Mobile Toggle */}
+          {/* Mobile Menu Toggle */}
           <button
             className="md:hidden text-3xl text-orange-600"
             onClick={() => setIsOpen(!isOpen)}
@@ -86,7 +99,7 @@ function Header() {
         </div>
       </header>
 
-      {/* Mobile Nav */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -94,7 +107,7 @@ function Header() {
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className={`md:hidden mx-4 mb-4 rounded-lg border border-orange-400 p-4 space-y-3 overflow-hidden shadow-[0_8px_15px_rgba(255,165,0,0.4),0_4px_10px_rgba(0,0,255,0.2)] ${
+            className={`md:hidden mx-4 mt-2 mb-4 rounded-lg border border-orange-400 p-4 space-y-3 overflow-hidden shadow-[0_8px_15px_rgba(255,165,0,0.4),0_4px_10px_rgba(0,0,255,0.2)] ${
               isDark ? 'bg-[#1e1e1e] text-white' : 'bg-white text-black'
             }`}
           >
@@ -113,11 +126,8 @@ function Header() {
 
             {user ? (
               <button
-                onClick={() => {
-                  setIsOpen(false);
-                  document.getElementById('logout-button')?.click();
-                }}
-                className="block w-full text-center bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition font-medium"
+                onClick={handleMobileLogout}
+                className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition font-medium"
               >
                 Logout
               </button>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login, getaccount } from '../api/auth.api'; // ✅ Import getaccount
+import { login, getaccount } from '../api/auth.api';
 import { useNavigate, Link } from 'react-router-dom';
 
 function Login() {
@@ -24,22 +24,28 @@ function Login() {
     const user = res?.payload?.data?.user;
 
     if (user) {
-      await dispatch(getaccount()); // ✅ Load full user details from backend
+      await dispatch(getaccount());
       navigate('/');
     }
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center px-4 ${
-      isDark ? 'bg-[#121212] text-white' : 'bg-gradient-to-br from-orange-100 to-blue-100 text-black'
-    }`}>
+    <div
+      className={`min-h-screen flex justify-center items-start pt-16 pb-24 px-4 sm:px-6 md:px-8 ${
+        isDark
+          ? 'bg-[#121212] text-white'
+          : 'bg-gradient-to-br from-orange-100 to-blue-100 text-black'
+      }`}
+    >
       <form
         onSubmit={handleSubmit}
-        className={`shadow-lg rounded-xl p-8 w-full max-w-md transition-all duration-300 ${
+        className={`w-full max-w-md shadow-xl rounded-2xl p-6 sm:p-8 transition-all duration-300 ${
           isDark ? 'bg-[#1e1e1e]' : 'bg-white'
         }`}
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-orange-500">Login</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-orange-500">
+          Login
+        </h2>
 
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
@@ -72,8 +78,10 @@ function Login() {
         </button>
 
         <p className="text-center mt-4 text-sm">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-blue-500 hover:underline">Register</Link>
+          Don&apos;t have an account?{' '}
+          <Link to="/register" className="text-blue-500 hover:underline">
+            Register
+          </Link>
         </p>
       </form>
     </div>
