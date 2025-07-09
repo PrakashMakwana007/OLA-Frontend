@@ -10,7 +10,7 @@ export const register = createAsyncThunk(
         import.meta.env.VITE_REGISTER_URL,
         userData
        )
-       console.log('Register response:', response); // Log the response data
+      //  console.log('Register response:', response); // Log the response data'
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
