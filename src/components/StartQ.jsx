@@ -67,31 +67,43 @@ const StartQuiz = () => {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`min-h-screen max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-10 transition-all ${
-        isDark ? "text-white bg-[#121212]" : "text-black bg-white"
+      className={`min-h-screen max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-10 rounded-lg shadow-inner transition-all ${
+        isDark
+          ? "bg-[#121212] text-white"
+          : "bg-gradient-to-br from-white via-orange-50 to-white text-black"
       }`}
     >
       <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-orange-500">
         🧠 {quiz.course?.title || "Untitled"} Quiz
       </h2>
 
-      <form className="space-y-6 sm:space-y-8">
+      <form className="space-y-8">
         {quiz.questions.map((q, idx) => (
-          <fieldset
+          <div
             key={idx}
-            className={`rounded-xl border p-4 sm:p-6 transition-all ${
-              isDark ? "bg-[#1e1e1e] border-gray-700" : "bg-gray-50 border-gray-200"
+            className={`rounded-xl shadow-md border-2 transition-all p-5 sm:p-6 ${
+              isDark
+                ? "bg-[#1e1e1e] border-orange-600"
+                : "bg-white border-orange-300"
             }`}
           >
-            <legend className="font-semibold text-base sm:text-lg mb-4">
+            <legend className="font-semibold text-base sm:text-lg mb-4 text-orange-500">
               {idx + 1}. {q.question}
             </legend>
 
-            <div className="flex flex-col gap-3">
+            <div className="grid sm:grid-cols-2 gap-4">
               {q.options.map((opt, i) => (
                 <label
                   key={i}
-                  className="flex items-center gap-3 cursor-pointer text-sm sm:text-base"
+                  className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
+                    answers[idx] === opt
+                      ? isDark
+                        ? "bg-orange-600 text-white"
+                        : "bg-orange-100 border-orange-500"
+                      : isDark
+                      ? "border-gray-700 bg-[#2a2a2a]"
+                      : "border-gray-300 bg-gray-50"
+                  }`}
                 >
                   <input
                     type="radio"
@@ -100,13 +112,12 @@ const StartQuiz = () => {
                     checked={answers[idx] === opt}
                     onChange={() => handleChange(idx, opt)}
                     className="accent-orange-500 w-4 h-4"
-                    required
                   />
-                  {opt}
+                  <span className="text-sm sm:text-base">{opt}</span>
                 </label>
               ))}
             </div>
-          </fieldset>
+          </div>
         ))}
 
         <button

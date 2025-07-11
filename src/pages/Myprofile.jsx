@@ -20,13 +20,13 @@ function MyProfile() {
 
       <div className="space-y-5 text-center">
         <p className={`text-lg ${labelClass}`}>
-          <strong className="mr-1">👨‍💼 Name:</strong> {user?.fullName}
+          <strong className="mr-1">Ful Name:</strong> {user?.fullName}
         </p>
         <p className={`text-lg ${labelClass}`}>
-          <strong className="mr-1">📧 Email:</strong> {user?.email}
+          <strong className="mr-1"> Email:</strong> {user?.email}
         </p>
         <p className={`text-lg ${labelClass}`}>
-          <strong className="mr-1">🔐 Role:</strong> {user?.role}
+          <strong className="mr-1"> Role:</strong> {user?.role}
         </p>
 
         <div className="pt-6">
