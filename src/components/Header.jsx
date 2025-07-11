@@ -22,11 +22,13 @@ function Header() {
           { label: 'Uploaded Courses', path: '/mycourses' },
           { label: 'Create Course', path: '/courses' },
           { label: 'Create Quiz', path: '/quiz' },
+          {label:'Profile', path:'/myprofile'}
         ]
       : [
           { label: 'Home', path: '/' },
           { label: 'Courses', path: '/corselist' },
           { label: 'Quiz', path: '/quiz-list' },
+          { label: 'Profile', path: '/myprofile' }
         ];
   }, [role]);
 
@@ -43,7 +45,8 @@ function Header() {
     }
   };
 
-  const hoverLinkClasses = 'transition-all duration-300 ease-in-out hover:text-orange-500 hover:scale-105 hover:drop-shadow-[1px_1px_0px_rgba(0,0,255,0.4)]';
+  const hoverLinkClasses =
+    'transition-all duration-300 ease-in-out hover:text-orange-500 hover:scale-105 hover:drop-shadow-[1px_1px_0px_rgba(0,0,255,0.4)]';
 
   return (
     <>
@@ -97,48 +100,72 @@ function Header() {
         </div>
       </header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Sidebar Menu */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0, scale: 0.95 }}
-            animate={{ height: 'auto', opacity: 1, scale: 1 }}
-            exit={{ height: 0, opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.3 }}
-            className={`md:hidden mx-4 mt-2 mb-4 rounded-lg border border-orange-400 p-4 space-y-3 overflow-hidden shadow-[0_8px_15px_rgba(255,165,0,0.4),0_4px_10px_rgba(0,0,255,0.2)] ${
-              isDark ? 'bg-[#1e1e1e] text-white' : 'bg-white text-black'
-            }`}
-          >
-            {navLinks.map(({ label, path }) => (
-              <Link
-                key={path}
-                to={path}
-                onClick={() => setIsOpen(false)}
-                className={`block ${hoverLinkClasses}`}
-              >
-                {label}
-              </Link>
-            ))}
+          <>
+            {/* Background Overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-40 bg-black bg-opacity-50"
+              onClick={() => setIsOpen(false)}
+            />
 
-            <ThemeToggle />
-
-            {user ? (
+            {/* Slide-in Sidebar */}
+            <motion.aside
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className={`fixed top-0 left-0 z-50 h-full w-64 p-5 space-y-4 shadow-xl border-r border-orange-400 ${
+                isDark ? 'bg-[#1e1e1e] text-white' : 'bg-white text-black'
+              }`}
+            >
+              {/* Close Button */}
               <button
-                onClick={handleMobileLogout}
-                className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition font-medium"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link
-                to="/login"
                 onClick={() => setIsOpen(false)}
-                className="block w-full text-center bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-500 transition font-medium"
+                className="text-2xl font-bold text-orange-500 hover:text-orange-600 transition"
               >
-                Login
-              </Link>
-            )}
-          </motion.div>
+                ✕
+              </button>
+
+              {/* Navigation Links */}
+              {navLinks.map(({ label, path }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  onClick={() => setIsOpen(false)}
+                  className={`block text-lg font-medium ${hoverLinkClasses}`}
+                >
+                  {label}
+                </Link>
+              ))}
+
+              {/* Theme Toggle */}
+              <ThemeToggle />
+
+              {/* Login/Logout Button */}
+              {user ? (
+                <button
+                  onClick={handleMobileLogout}
+                  className="w-full bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition font-medium"
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full text-center bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-500 transition font-medium"
+                >
+                  Login
+                </Link>
+              )}
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
     </>

@@ -34,7 +34,6 @@ const StartQuiz = () => {
   };
 
   const handleSubmit = async () => {
-    // Validate: make sure all questions are answered
     if (answers.includes("")) {
       alert("🚫 Please answer all questions before submitting.");
       return;
@@ -53,14 +52,15 @@ const StartQuiz = () => {
 
       const resultData = res.data.data;
       resultData.quiz = quiz;
-
       navigate("/quiz-result", { state: resultData });
     } catch (err) {
       console.error("Submission failed:", err);
     }
   };
 
-  if (loading) return <div className="text-center py-10 text-lg">⏳ Loading quiz...</div>;
+  if (loading) {
+    return <div className="text-center py-10 text-lg">⏳ Loading quiz...</div>;
+  }
 
   return (
     <motion.div
@@ -72,17 +72,15 @@ const StartQuiz = () => {
       }`}
     >
       <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-orange-500">
-        🧠 {quiz.course?.title} Quiz
+        🧠 {quiz.course?.title || "Untitled"} Quiz
       </h2>
 
-      <form className="space-y-8">
+      <form className="space-y-6 sm:space-y-8">
         {quiz.questions.map((q, idx) => (
           <fieldset
             key={idx}
-            className={`p-4 sm:p-6 rounded-lg shadow-md border transition-all ${
-              isDark
-                ? "bg-[#1e1e1e] border-gray-700"
-                : "bg-gray-50 border-gray-200"
+            className={`rounded-xl border p-4 sm:p-6 transition-all ${
+              isDark ? "bg-[#1e1e1e] border-gray-700" : "bg-gray-50 border-gray-200"
             }`}
           >
             <legend className="font-semibold text-base sm:text-lg mb-4">
@@ -91,7 +89,10 @@ const StartQuiz = () => {
 
             <div className="flex flex-col gap-3">
               {q.options.map((opt, i) => (
-                <label key={i} className="flex items-center gap-3 cursor-pointer">
+                <label
+                  key={i}
+                  className="flex items-center gap-3 cursor-pointer text-sm sm:text-base"
+                >
                   <input
                     type="radio"
                     name={`q-${idx}`}
@@ -101,7 +102,7 @@ const StartQuiz = () => {
                     className="accent-orange-500 w-4 h-4"
                     required
                   />
-                  <span className="text-sm sm:text-base">{opt}</span>
+                  {opt}
                 </label>
               ))}
             </div>
@@ -111,7 +112,7 @@ const StartQuiz = () => {
         <button
           type="button"
           onClick={handleSubmit}
-          className="mt-10 w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-md font-semibold hover:brightness-110 hover:scale-105 transition-all duration-200"
+          className="mt-10 w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg font-semibold hover:brightness-110 hover:scale-105 transition-all duration-200"
         >
           🚀 Submit Quiz
         </button>

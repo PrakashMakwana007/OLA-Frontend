@@ -16,6 +16,7 @@ import MyQuizzes from "./components/Myquiz";
 import QuizList from "./components/QuizList";
 import StartQuiz from "./components/StartQ";
 import QuizRes from "./components/QuizRes";
+import MyProfile from "./pages/Myprofile";
 
 function App() {
   const dispatch = useDispatch();
@@ -98,7 +99,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+           <Route 
+            path="/myprofile"
+            element={
+              <ProtectedRoute>
+                <MyProfile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
+         
       </main> 
 
       <Footer />
