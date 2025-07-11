@@ -1,57 +1,92 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createQuiz } from "../api/quiz.api";
 import API from "../api/api";
 import { useNavigate } from "react-router-dom";
 
+
+const QuestionForm = React.memo(({ index, question, onQuestionChange, onOptionChange, inputClasses }) => (
+  <div className="p-4 rounded-lg border shadow-sm space-y-3 bg-opacity-20">
+    <h4 className="font-semibold text-orange-500">Question {index + 1}</h4>
+    <input
+      type="text"
+      value={question.question}
+      onChange={(e) => onQuestionChange(index, "question", e.target.value)}
+      placeholder="Type your question here..."
+      className={inputClasses}
+      required
+    />
+    {question.options.map((opt, j) => (
+      <input
+        key={j}
+        type="text"
+        value={opt}
+        onChange={(e) => onOptionChange(index, j, e.target.value)}
+        placeholder={`Option ${j + 1}`}
+        className={inputClasses}
+        required
+      />
+    ))}
+    <input
+      type="text"
+      value={question.answer}
+      onChange={(e) => onQuestionChange(index, "answer", e.target.value)}
+      placeholder="Correct Answer"
+      className={inputClasses}
+      required
+    />
+  </div>
+));
+
 const CreateQuiz = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const [courses, setCourses] = useState([]);
   const [courseId, setCourseId] = useState("");
   const [questions, setQuestions] = useState([
     { question: "", options: ["", "", "", ""], answer: "" },
   ]);
+  const [fetchingCourses, setFetchingCourses] = useState(true);
 
   const { loading } = useSelector((state) => state.quiz);
-  const isDark = useSelector((state) => state.theme.theme === "dark");
   const { user } = useSelector((state) => state.auth);
+  const isDark = useSelector((state) => state.theme.theme === "dark");
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const res = await API.get(
-          `${import.meta.env.VITE_API_BASE_URL}/course/courese`
-        );
-        const uploaded = res.data.data.filter(
-          (c) => c.teacherId?._id === user?._id
-        );
-        setCourses(uploaded);
-      } catch (err) {
-        console.error("Failed to load courses", err);
-      }
-    };
-
-    if (user?._id) fetchCourses();
+  const fetchCourses = useCallback(async () => {
+    try {
+      const res = await API.get(`${import.meta.env.VITE_API_BASE_URL}/course/courese`);
+      const uploaded = res.data.data.filter(c => c.teacherId?._id === user?._id);
+      setCourses(uploaded);
+    } catch (err) {
+      console.error("Failed to load courses", err);
+    } finally {
+      setFetchingCourses(false);
+    }
   }, [user]);
 
-  const handleQuestionChange = (index, field, value) => {
-    const updated = [...questions];
-    updated[index][field] = value;
-    setQuestions(updated);
-  };
+  useEffect(() => {
+    if (user?._id) fetchCourses();
+  }, [fetchCourses, user]);
 
-  const handleOptionChange = (qIndex, optIndex, value) => {
-    const updated = [...questions];
-    updated[qIndex].options[optIndex] = value;
-    setQuestions(updated);
-  };
+  const handleQuestionChange = useCallback((index, field, value) => {
+    setQuestions(prev => {
+      const updated = [...prev];
+      updated[index][field] = value;
+      return updated;
+    });
+  }, []);
+
+  const handleOptionChange = useCallback((qIndex, optIndex, value) => {
+    setQuestions(prev => {
+      const updated = [...prev];
+      updated[qIndex].options[optIndex] = value;
+      return updated;
+    });
+  }, []);
 
   const addQuestion = () => {
-    setQuestions([
-      ...questions,
-      { question: "", options: ["", "", "", ""], answer: "" },
-    ]);
+    setQuestions([...questions, { question: "", options: ["", "", "", ""], answer: "" }]);
   };
 
   const handleSubmit = async (e) => {
@@ -83,79 +118,45 @@ const CreateQuiz = () => {
   } hover:scale-105 hover:shadow-lg`;
 
   return (
-    <div
-      className={`min-h-screen px-4 sm:px-6 md:px-8 py-10 max-w-3xl mx-auto rounded-xl shadow transition-all ${
-        isDark ? "bg-[#1e1e1e] text-white" : "bg-white text-black"
-      }`}
-    >
-      <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-center text-orange-500">
-        📝 Create a New Quiz
-      </h2>
+    <div className={`min-h-screen px-4 sm:px-6 md:px-8 py-10 max-w-3xl mx-auto rounded-xl shadow transition-all ${
+      isDark ? "bg-[#1e1e1e] text-white" : "bg-white text-black"
+    }`}>
+      <h2 className="text-3xl font-bold mb-8 text-center text-orange-500">📝 Create a New Quiz</h2>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Course Selection */}
         <div>
           <label className="block mb-1 font-medium">Select Course</label>
-          <select
-            value={courseId}
-            onChange={(e) => setCourseId(e.target.value)}
-            className={inputClasses}
-          >
-            <option value="">-- Select Course --</option>
-            {courses.map((course) => (
-              <option key={course._id} value={course._id}>
-                {course.title}
-              </option>
-            ))}
-          </select>
+          {fetchingCourses ? (
+            <div className="text-sm text-gray-400">Loading courses...</div>
+          ) : (
+            <select
+              value={courseId}
+              onChange={(e) => setCourseId(e.target.value)}
+              className={inputClasses}
+              required
+            >
+              <option value="">-- Select Course --</option>
+              {courses.map((course) => (
+                <option key={course._id} value={course._id}>
+                  {course.title}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
-        {/* Questions UI */}
+        {/* Question Inputs */}
         <div className="space-y-6">
           {questions.map((q, i) => (
-            <div
+            <QuestionForm
               key={i}
-              className={`p-4 rounded-lg border shadow-sm space-y-3 ${
-                isDark ? "bg-[#2a2a2a] border-gray-700" : "bg-gray-50"
-              }`}
-            >
-              <h4 className="font-semibold text-orange-500">
-                Question {i + 1}
-              </h4>
-              <input
-                type="text"
-                value={q.question}
-                onChange={(e) =>
-                  handleQuestionChange(i, "question", e.target.value)
-                }
-                placeholder="Type your question here..."
-                className={inputClasses}
-                required
-              />
-
-              {q.options.map((opt, j) => (
-                <input
-                  key={j}
-                  type="text"
-                  value={opt}
-                  onChange={(e) => handleOptionChange(i, j, e.target.value)}
-                  placeholder={`Option ${j + 1}`}
-                  className={inputClasses}
-                  required
-                />
-              ))}
-
-              <input
-                type="text"
-                value={q.answer}
-                onChange={(e) =>
-                  handleQuestionChange(i, "answer", e.target.value)
-                }
-                placeholder="Correct Answer"
-                className={inputClasses}
-                required
-              />
-            </div>
+              index={i}
+              question={q}
+              onQuestionChange={handleQuestionChange}
+              onOptionChange={handleOptionChange}
+              inputClasses={inputClasses}
+            />
           ))}
         </div>
 
@@ -164,11 +165,7 @@ const CreateQuiz = () => {
           <button type="button" onClick={addQuestion} className={buttonClasses}>
             ➕ Add Question
           </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`${buttonClasses} disabled:opacity-60`}
-          >
+          <button type="submit" disabled={loading} className={`${buttonClasses} disabled:opacity-60`}>
             {loading ? "Creating..." : "🚀 Create Quiz"}
           </button>
         </div>

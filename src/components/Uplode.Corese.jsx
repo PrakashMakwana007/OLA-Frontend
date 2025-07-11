@@ -8,6 +8,7 @@ function AddCourse() {
   const [formData, setFormData] = useState({ title: '', description: '' });
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [lessons, setLessons] = useState([{ title: '', videoURL: '' }]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -35,13 +36,25 @@ function AddCourse() {
     setThumbnailFile(e.target.files[0]);
   };
 
+  const isValidURL = (url) =>
+    /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/.test(url);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
 
     if (!thumbnailFile) {
       toast.error('Please select a thumbnail image.');
       return;
     }
+
+    const hasInvalidURL = lessons.some((lesson) => !isValidURL(lesson.videoURL));
+    if (hasInvalidURL) {
+      toast.error('Please enter valid video URLs.');
+      return;
+    }
+
+    setIsSubmitting(true);
 
     const data = new FormData();
     data.append('title', formData.title);
@@ -55,9 +68,12 @@ function AddCourse() {
       setFormData({ title: '', description: '' });
       setThumbnailFile(null);
       setLessons([{ title: '', videoURL: '' }]);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       navigate('/corselist');
     } catch (err) {
       toast.error(err.message || 'Failed to upload course');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -120,7 +136,7 @@ function AddCourse() {
           required
         />
 
-        {/* Lessons */}
+        {/* Lessons Section */}
         <div className="space-y-6">
           {lessons.map((lesson, index) => (
             <div key={index} className="space-y-3">
@@ -159,8 +175,14 @@ function AddCourse() {
           </button>
         </div>
 
-        <button type="submit" className={`${buttonClasses} w-full`}>
-          🚀 Upload Course
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className={`${buttonClasses} w-full ${
+            isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
+        >
+          {isSubmitting ? '⏳ Uploading...' : '🚀 Upload Course'}
         </button>
       </form>
     </div>

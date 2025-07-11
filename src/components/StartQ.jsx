@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import API from "../api/api";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
 
 const StartQuiz = () => {
   const { quizId } = useParams();
   const [quiz, setQuiz] = useState(null);
   const [answers, setAnswers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const isDark = useSelector((state) => state.theme.theme) === "dark";
+  const isDark = useSelector((state) => state.theme.theme === "dark");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +34,12 @@ const StartQuiz = () => {
   };
 
   const handleSubmit = async () => {
+    // Validate: make sure all questions are answered
+    if (answers.includes("")) {
+      alert("🚫 Please answer all questions before submitting.");
+      return;
+    }
+
     try {
       const responsePayload = answers.map((option, index) => ({
         questionIndex: index,
@@ -46,62 +53,70 @@ const StartQuiz = () => {
 
       const resultData = res.data.data;
       resultData.quiz = quiz;
+
       navigate("/quiz-result", { state: resultData });
     } catch (err) {
       console.error("Submission failed:", err);
     }
   };
 
-  if (loading) return <div className="text-center py-10">Loading quiz...</div>;
+  if (loading) return <div className="text-center py-10 text-lg">⏳ Loading quiz...</div>;
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
       className={`min-h-screen max-w-4xl mx-auto px-4 sm:px-6 md:px-8 py-10 transition-all ${
         isDark ? "text-white bg-[#121212]" : "text-black bg-white"
       }`}
     >
       <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8 text-orange-500">
-        {quiz.course?.title} Quiz
+        🧠 {quiz.course?.title} Quiz
       </h2>
 
       <form className="space-y-8">
         {quiz.questions.map((q, idx) => (
-          <div
+          <fieldset
             key={idx}
-            className={`p-4 sm:p-6 rounded-lg shadow-md ${
-              isDark ? "bg-[#1e1e1e]" : "bg-gray-100"
+            className={`p-4 sm:p-6 rounded-lg shadow-md border transition-all ${
+              isDark
+                ? "bg-[#1e1e1e] border-gray-700"
+                : "bg-gray-50 border-gray-200"
             }`}
           >
-            <p className="font-semibold text-base sm:text-lg mb-4">
+            <legend className="font-semibold text-base sm:text-lg mb-4">
               {idx + 1}. {q.question}
-            </p>
-            <div className="flex flex-col gap-2">
+            </legend>
+
+            <div className="flex flex-col gap-3">
               {q.options.map((opt, i) => (
-                <label key={i} className="flex items-center cursor-pointer">
+                <label key={i} className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="radio"
                     name={`q-${idx}`}
                     value={opt}
                     checked={answers[idx] === opt}
                     onChange={() => handleChange(idx, opt)}
-                    className="mr-3"
+                    className="accent-orange-500 w-4 h-4"
+                    required
                   />
-                  <span>{opt}</span>
+                  <span className="text-sm sm:text-base">{opt}</span>
                 </label>
               ))}
             </div>
-          </div>
+          </fieldset>
         ))}
 
         <button
           type="button"
           onClick={handleSubmit}
-          className="mt-8 w-full py-3 bg-orange-500 text-white rounded-md font-semibold hover:bg-orange-600 transition"
+          className="mt-10 w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-md font-semibold hover:brightness-110 hover:scale-105 transition-all duration-200"
         >
           🚀 Submit Quiz
         </button>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

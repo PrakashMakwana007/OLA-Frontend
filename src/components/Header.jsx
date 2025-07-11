@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,26 +9,26 @@ import { clearCredentials } from '../store/authSlice';
 
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch = useDispatch();
   const currentTheme = useSelector((state) => state.theme.theme);
   const isDark = currentTheme === 'dark';
   const { user } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
   const role = user?.role || 'student';
 
-  const teacherLinks = [
-    { label: 'Home', path: '/' },
-    { label: 'Uploaded Courses', path: '/mycourses' },
-    { label: 'Create Course', path: '/courses' },
-    { label: 'Create Quiz', path: '/quiz' },
-  ];
-
-  const studentLinks = [
-    { label: 'Home', path: '/' },
-    { label: 'Courses', path: '/corselist' },
-    { label: 'Quiz', path: '/quiz-list' },
-  ];
-
-  const navLinks = role === 'teacher' ? teacherLinks : studentLinks;
+  const navLinks = useMemo(() => {
+    return role === 'teacher'
+      ? [
+          { label: 'Home', path: '/' },
+          { label: 'Uploaded Courses', path: '/mycourses' },
+          { label: 'Create Course', path: '/courses' },
+          { label: 'Create Quiz', path: '/quiz' },
+        ]
+      : [
+          { label: 'Home', path: '/' },
+          { label: 'Courses', path: '/corselist' },
+          { label: 'Quiz', path: '/quiz-list' },
+        ];
+  }, [role]);
 
   const handleMobileLogout = async () => {
     try {
@@ -37,16 +37,18 @@ function Header() {
       localStorage.removeItem('refreshToken');
       dispatch(clearCredentials());
     } catch (err) {
-      console.error("Logout failed:", err);
+      console.error('Logout failed:', err);
     } finally {
       setIsOpen(false);
     }
   };
 
+  const hoverLinkClasses = 'transition-all duration-300 ease-in-out hover:text-orange-500 hover:scale-105 hover:drop-shadow-[1px_1px_0px_rgba(0,0,255,0.4)]';
+
   return (
     <>
       <header
-        className={`sticky top-0 z-50 border-b-4 border-orange-400 transition-all duration-300 shadow-lg ${
+        className={`sticky top-0 z-50 border-b-4 border-orange-400 transition-colors duration-300 shadow-lg ${
           isDark ? 'bg-[#121212] text-white' : 'bg-white text-black'
         }`}
       >
@@ -64,11 +66,7 @@ function Header() {
           {/* Desktop Nav */}
           <nav className="hidden md:flex flex-1 justify-center items-center space-x-6">
             {navLinks.map(({ label, path }) => (
-              <Link
-                key={path}
-                to={path}
-                className="hover:text-orange-500 transition duration-300 hover:drop-shadow-[1px_1px_0px_rgba(0,0,255,0.4)]"
-              >
+              <Link key={path} to={path} className={hoverLinkClasses}>
                 {label}
               </Link>
             ))}
@@ -89,10 +87,10 @@ function Header() {
             )}
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Toggle */}
           <button
-            className="md:hidden text-3xl text-orange-600"
-            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden text-3xl text-orange-600 transition-transform duration-300 hover:scale-110"
+            onClick={() => setIsOpen((prev) => !prev)}
           >
             ☰
           </button>
@@ -103,9 +101,9 @@ function Header() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ height: 0, opacity: 0, scale: 0.95 }}
+            animate={{ height: 'auto', opacity: 1, scale: 1 }}
+            exit={{ height: 0, opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3 }}
             className={`md:hidden mx-4 mt-2 mb-4 rounded-lg border border-orange-400 p-4 space-y-3 overflow-hidden shadow-[0_8px_15px_rgba(255,165,0,0.4),0_4px_10px_rgba(0,0,255,0.2)] ${
               isDark ? 'bg-[#1e1e1e] text-white' : 'bg-white text-black'
@@ -116,7 +114,7 @@ function Header() {
                 key={path}
                 to={path}
                 onClick={() => setIsOpen(false)}
-                className="block hover:text-orange-500 transition"
+                className={`block ${hoverLinkClasses}`}
               >
                 {label}
               </Link>

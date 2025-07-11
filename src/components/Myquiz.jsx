@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { motion } from "framer-motion";
 import API from "../api/api";
 
 const MyQuizzes = () => {
@@ -7,7 +8,7 @@ const MyQuizzes = () => {
   const [loading, setLoading] = useState(true);
 
   const { user } = useSelector((state) => state.auth);
-  const isDark = useSelector((state) => state.theme.theme) === "dark";
+  const isDark = useSelector((state) => state.theme.theme === "dark");
 
   useEffect(() => {
     const fetchQuizzes = async () => {
@@ -40,13 +41,16 @@ const MyQuizzes = () => {
       {loading ? (
         <p className="text-center text-lg">⏳ Loading quizzes...</p>
       ) : quizzes.length === 0 ? (
-        <p className="text-center text-lg">🚫 No quizzes found.</p>
+        <p className="text-center text-lg text-gray-400">🚫 No quizzes found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {quizzes.map((quiz) => (
-            <div
+          {quizzes.map((quiz, qIndex) => (
+            <motion.div
               key={quiz._id}
-              className={`p-5 rounded-lg border shadow space-y-5 ${
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: qIndex * 0.1 }}
+              className={`p-5 rounded-lg border shadow space-y-5 hover:shadow-md transition-all duration-300 ${
                 isDark
                   ? "bg-[#2a2a2a] border-gray-700"
                   : "bg-gray-100 border-gray-200"
@@ -67,25 +71,34 @@ const MyQuizzes = () => {
                 {quiz.questions.map((q, i) => (
                   <div
                     key={i}
-                    className={`p-4 rounded-md shadow-sm ${
-                      isDark ? "bg-[#1a1a1a]" : "bg-white"
+                    className={`p-4 rounded-md border ${
+                      isDark
+                        ? "bg-[#1a1a1a] border-gray-700"
+                        : "bg-white border-gray-300"
                     }`}
                   >
                     <h4 className="font-medium mb-2">
-                      Q{i + 1}: {q.question}
+                      <span className="text-blue-500 font-bold">Q{i + 1}:</span>{" "}
+                      {q.question}
                     </h4>
                     <ul className="list-disc pl-5 text-sm sm:text-base space-y-1">
                       {q.options.map((opt, idx) => (
-                        <li key={idx}>{opt}</li>
+                        <li
+                          key={idx}
+                          className={`${
+                            opt === q.answer
+                              ? "font-semibold text-green-500"
+                              : ""
+                          }`}
+                        >
+                          {opt}
+                        </li>
                       ))}
                     </ul>
-                    <p className="mt-2 text-sm font-semibold text-green-500">
-                      ✅ Correct Answer: {q.answer}
-                    </p>
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       )}
