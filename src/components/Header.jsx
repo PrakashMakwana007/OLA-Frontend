@@ -1,3 +1,4 @@
+// Header.jsx
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -22,13 +23,13 @@ function Header() {
           { label: 'Uploaded Courses', path: '/mycourses' },
           { label: 'Create Course', path: '/courses' },
           { label: 'Create Quiz', path: '/quiz' },
-          {label:'Profile', path:'/myprofile'}
+          { label: 'Profile', path: '/myprofile' },
         ]
       : [
           { label: 'Home', path: '/' },
           { label: 'Courses', path: '/corselist' },
           { label: 'Quiz', path: '/quiz-list' },
-          { label: 'Profile', path: '/myprofile' }
+          { label: 'Profile', path: '/myprofile' },
         ];
   }, [role]);
 
@@ -46,24 +47,20 @@ function Header() {
   };
 
   const hoverLinkClasses =
-    'transition-all duration-300 ease-in-out hover:text-orange-500 hover:scale-105 hover:drop-shadow-[1px_1px_0px_rgba(0,0,255,0.4)]';
+    'transition-all duration-300 ease-in-out hover:text-orange-500 hover:scale-105';
 
   return (
     <>
       <header
-        className={`sticky top-0 z-50 border-b-4 border-orange-400 transition-colors duration-300 shadow-lg ${
+        className={`sticky top-0 z-50 border-b-4 border-orange-400 transition-colors duration-300 shadow-md ${
           isDark ? 'bg-[#121212] text-white' : 'bg-white text-black'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+        <div className="max-w-7xl mx-auto px-4 py-2 md:py-3 flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img
-              src="/logo2.png"
-              alt="Logo"
-              className="h-12 w-12 object-contain drop-shadow-[2px_2px_0px_rgba(0,0,255,0.3)]"
-            />
-            <span className="text-2xl font-bold text-orange-600">Learn App</span>
+            <img src="/logo2.png" alt="Logo" className="h-10 w-10 object-contain" />
+            <span className="text-xl sm:text-2xl font-bold text-orange-600">Learn App</span>
           </Link>
 
           {/* Desktop Nav */}
@@ -83,7 +80,7 @@ function Header() {
             ) : (
               <Link
                 to="/login"
-                className="bg-orange-400 text-white px-4 py-1.5 rounded hover:bg-orange-500 hover:shadow-[0_4px_10px_rgba(0,0,255,0.3)] transition font-medium"
+                className="bg-orange-400 text-white px-4 py-1.5 rounded hover:bg-orange-500 transition font-medium"
               >
                 Login
               </Link>
@@ -104,7 +101,6 @@ function Header() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Background Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
@@ -113,8 +109,6 @@ function Header() {
               className="fixed inset-0 z-40 bg-black bg-opacity-50"
               onClick={() => setIsOpen(false)}
             />
-
-            {/* Slide-in Sidebar */}
             <motion.aside
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
@@ -124,7 +118,6 @@ function Header() {
                 isDark ? 'bg-[#1e1e1e] text-white' : 'bg-white text-black'
               }`}
             >
-              {/* Close Button */}
               <button
                 onClick={() => setIsOpen(false)}
                 className="text-2xl font-bold text-orange-500 hover:text-orange-600 transition"
@@ -132,7 +125,6 @@ function Header() {
                 ✕
               </button>
 
-              {/* Navigation Links */}
               {navLinks.map(({ label, path }) => (
                 <Link
                   key={path}
@@ -144,10 +136,8 @@ function Header() {
                 </Link>
               ))}
 
-              {/* Theme Toggle */}
               <ThemeToggle />
 
-              {/* Login/Logout Button */}
               {user ? (
                 <button
                   onClick={handleMobileLogout}

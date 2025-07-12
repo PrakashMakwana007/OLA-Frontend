@@ -1,3 +1,4 @@
+// Home.jsx
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,7 +27,7 @@ function Home() {
 
   return (
     <div
-      className={`min-h-screen px-4 sm:px-6 md:px-8 py-12 transition-all ${
+      className={`min-h-screen px-4 sm:px-6 md:px-8 py-10 transition-all ${
         isDark ? 'bg-[#121212] text-white' : 'bg-white text-black'
       }`}
     >
@@ -57,22 +58,22 @@ function Home() {
         <h2 className="text-3xl font-semibold text-center text-orange-500 mb-10">
           Top Developer Tracks 🚀
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-10">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
           {cards.map((card, index) => (
             <div
               key={index}
               onClick={() => navigate('/courses')}
-              className={`cursor-pointer rounded-lg overflow-hidden shadow-lg transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl ${
+              className={`cursor-pointer rounded-xl overflow-hidden shadow-md transition-transform duration-300 hover:-translate-y-1 hover:shadow-xl ${
                 isDark ? 'bg-[#1e1e1e]' : 'bg-white'
               }`}
             >
               <img
                 src={card.image}
                 alt={card.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-40 sm:h-48 md:h-56 object-cover"
               />
-              <div className="p-5">
-                <h3 className="text-xl font-bold mb-2 text-orange-500">{card.title}</h3>
+              <div className="p-4">
+                <h3 className="text-lg sm:text-xl font-bold mb-2 text-orange-500">{card.title}</h3>
                 <p className="text-sm">{card.description}</p>
               </div>
             </div>
@@ -82,7 +83,6 @@ function Home() {
 
       {/* Motivation + Video Section */}
       <div className="max-w-6xl mx-auto mt-20 flex flex-col md:flex-row items-center gap-10">
-        {/* Text Section */}
         <div className="flex-1 space-y-3 text-center md:text-left">
           <h2 className="text-3xl font-semibold text-orange-500">Why Learn to Code?</h2>
           <p className="text-base leading-relaxed">
@@ -100,8 +100,6 @@ function Home() {
             🧑‍💻 LearnApp makes it simple and fun to begin!
           </p>
         </div>
-
-        {/* Video Section */}
         <div className="flex-1 relative rounded-xl overflow-hidden shadow-lg w-full h-[250px] sm:h-[300px] md:h-[350px]">
           <div className="absolute inset-0 bg-black opacity-30 z-10 rounded-xl" />
           <video

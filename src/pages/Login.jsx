@@ -31,12 +31,19 @@ function Login() {
 
   return (
     <div
-      className={`min-h-screen flex justify-center items-start pt-16 pb-24 px-4 sm:px-6 md:px-8 ${
+      className={`relative min-h-screen flex justify-center items-start pt-16 pb-24 px-4 sm:px-6 md:px-8 ${
         isDark
           ? 'bg-[#121212] text-white'
           : 'bg-gradient-to-br from-orange-100 to-blue-100 text-black'
       }`}
     >
+      {/* Full screen loader */}
+      {loading && (
+        <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="border-4 border-t-transparent border-white rounded-full w-12 h-12 animate-spin"></div>
+        </div>
+      )}
+
       <form
         onSubmit={handleSubmit}
         className={`w-full max-w-md shadow-xl rounded-2xl p-6 sm:p-8 transition-all duration-300 ${
