@@ -23,10 +23,13 @@ function Login() {
     const res = await dispatch(login(formData));
     const user = res?.payload?.data?.user;
 
-    if (user) {
-       dispatch(getaccount());
-      navigate('/');
-    }
+   if (user) {
+  navigate('/');
+  setTimeout(() => {
+    dispatch(getaccount());
+  }, 100); // optional delay to prevent UI glitch
+}
+
   };
 
   return (
