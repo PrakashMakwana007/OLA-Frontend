@@ -34,10 +34,10 @@ function Register() {
           : 'bg-gradient-to-br from-orange-100 to-blue-100 text-black'
       }`}
     >
-      {/* Full screen loader */}
+      {/* Full screen loader (same as login) */}
       {loading && (
-        <div className="absolute inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-          <div className="border-4 border-t-transparent border-white rounded-full w-12 h-12 animate-spin"></div>
+        <div className="fixed top-0 left-0 w-full h-full z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="w-14 h-14 border-4 border-orange-500 border-t-white rounded-full animate-spin shadow-lg"></div>
         </div>
       )}
 

@@ -133,17 +133,17 @@ function Home() {
         {/* Student Images */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           <img
-            src="/public/student 3.jpg"
+            src="/student 3.jpg"
             alt="Student learning on mobile"
             className="rounded-xl shadow-md object-cover w-full h-64"
           />
           <img
-            src="/public/studen22.jpg"
+            src="/studen22.jpg"
             alt="Girl coding on bed"
             className="rounded-xl shadow-md object-cover w-full h-64"
           />
           <img
-            src="/public/student11.jpg.jpg"
+            src="/student11.jpg.jpg"
             alt="Boy learning from phone"
             className="rounded-xl shadow-md object-cover w-full h-64"
           />
